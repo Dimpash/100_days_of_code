@@ -39,6 +39,6 @@ for index, row in birthdays.iterrows():
             connection.sendmail(from_addr=MY_EMAIL, to_addrs=row["email"], msg=message)
 
 
-
+#
 
 

@@ -3,12 +3,12 @@ import datetime as dt
 import random
 
 
-# MY_EMAIL = "mitya.p.76.exp@gmail.com"
-# MY_PASSWORD = "exp,123698745"
-# destination_email = "mitya.p.76@gmail.com"
-MY_EMAIL = "main-it@esbit.vitebsk.energo.net"
-MY_PASSWORD = "20011954"
-destination_email = "mitya_76@mail.ru"
+# MY_EMAIL = "mitya.p.76.ex@gmail.com"
+# MY_PASSWORD = ""
+# destination_email = "mitya.p.7@gmail.com"
+MY_EMAIL = "main-i@esbit.vitebsk.energo.net"
+MY_PASSWORD = ""
+destination_email = "mitya_7@mail.ru"
 
 now = dt.datetime.now()
 now_weekday = now.weekday()

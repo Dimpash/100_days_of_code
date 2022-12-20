@@ -4,10 +4,10 @@ import random
 
 
 # MY_EMAIL = "mitya.p.76.exp@gmail.com"
-# MY_PASSWORD = "exp,123698745"
+# MY_PASSWORD = "exp,"
 # destination_email = "mitya.p.76@gmail.com"
 MY_EMAIL = "main-it@esbit.vitebsk.energo.net"
-MY_PASSWORD = "20011954"
+MY_PASSWORD = "200119"
 destination_email = "mitya_76@mail.ru"
 
 now = dt.datetime.now()

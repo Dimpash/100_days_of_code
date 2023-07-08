@@ -3,7 +3,9 @@ import datetime as dt
 import random
 import os
 
-
+# MY_SMTP = "smtp.mail.yahoo.com"
+# MY_EMAIL = "mitya_p_76_exp@yahoo.com"
+MY_SMTP = "smtp.gmail.com"
 MY_EMAIL = os.environ.get('MY_EMAIL')
 MY_PASSWORD = os.environ.get('MY_PASSWORD')
 destination_emails = ["mitya_76@mail.ru", "egorpashkevich5@gmail.com", "sareynj@gmail.com"]
@@ -18,7 +20,7 @@ with open("quotes.txt", "r") as f:
 def quote_sending(destination_email):
     quote = random.choice(quotes)
     message = f"Subject:Motivation quote\n\n{quote}"
-    with smtplib.SMTP("smtp.gmail.com") as connection:
+    with smtplib.SMTP(MY_SMTP) as connection:
         connection.starttls()
         connection.login(user=MY_EMAIL, password=MY_PASSWORD)
         connection.sendmail(from_addr=MY_EMAIL, to_addrs=destination_email, msg=message)
@@ -26,4 +28,19 @@ def quote_sending(destination_email):
 
 for dest_email in destination_emails:
     quote_sending(dest_email)
+
+
+# now = dt.datetime.now()
+# now_weekday = now.weekday()
+#
+# with open("quotes.txt", "r") as f:
+#     quotes = f.readlines()
+#
+#
+# quote = random.choice(quotes)
+# message = f"Subject:Motivation quote\n\n{quote}"
+# with smtplib.SMTP(MY_SMTP) as connection:
+#     connection.starttls()
+#     connection.login(user=MY_EMAIL, password=MY_PASSWORD)
+#     connection.sendmail(from_addr=MY_EMAIL, to_addrs=destination_email, msg=message)
 

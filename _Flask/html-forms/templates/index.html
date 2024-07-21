@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action="{{ url_for('receive_data') }}" method="post">
+    <div><label for="fname">Name</label><input type="text" id="fname" name="fname" placeholder="name"></div>
+    <div><label for="fpassword">Password</label><input type="text" id="fpassword" name="fpassword" placeholder="password"></div>
+    <div><input type="submit" value="Ok"></div>
+</form>
+
+</body>
+</html>

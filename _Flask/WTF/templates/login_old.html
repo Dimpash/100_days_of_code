@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>Login</title>
+	</head>
+	<body>
+        <div class="container">
+		<h1>Login</h1>
+        <form method="POST" action="{{ url_for('login') }}" novalidate>
+    		{{ login_form.csrf_token }}
+    		<p>
+				{{ login_form.email.label }} <br> {{ login_form.email(size=30) }}
+				{% for err in login_form.email.errors %}
+				<span style="color: red">{{ err }}</span>
+				{% endfor %}
+			</p>
+			<p>
+				{{ login_form.password.label }} <br> {{ login_form.password(size=30) }}
+				{% for err in login_form.password.errors %}
+				<span style="color: red">{{ err }}</span>
+				{% endfor %}
+			</p>
+    		<p>
+				{{ login_form.submit }}
+			</p>
+		</form>
+        </div>
+	</body>
+</html>

@@ -3,7 +3,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import datetime as dt
 from pprint import pprint
-
+# New method
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
 url = 'http://orteil.dashnet.org/experiments/cookie/'
 
@@ -14,7 +16,8 @@ chrome_options = webdriver.ChromeOptions()
 # chrome_options.add_argument('--headless')
 chrome_options.add_experimental_option("detach", True)  # This line of code keeps Chrome browser window opened
 
-driver = webdriver.Chrome(options=chrome_options)
+# driver = webdriver.Chrome(options=chrome_options)
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
 driver.get(f"{url}")
 

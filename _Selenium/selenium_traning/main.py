@@ -1,6 +1,9 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from pprint import pprint
+# New method
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
 URL = 'https://www.python.org/'
 
@@ -13,8 +16,10 @@ chrome_options.add_argument('--headless')
 # pprint(chrome_options)
 
 # driver = webdriver.Chrome()
-driver = webdriver.Chrome(options=chrome_options)
-#
+# driver = webdriver.Chrome(options=chrome_options)
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+# driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(), options=options)
+
 driver.get(f"{URL}")
 
 # CSS_SELECTOR method

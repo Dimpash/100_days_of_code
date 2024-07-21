@@ -3,6 +3,9 @@ from selenium.webdriver.common.by import By
 from pprint import pprint
 import os
 import time
+# New method
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
 URL = 'https://www.linkedin.com/jobs/search/?currentJobId=3462972514&f_AL=true&f_T=25169&geoId=101705918&keywords=python&location=Belarus&refresh=true&sortBy=R'
 
@@ -17,7 +20,8 @@ chrome_options = webdriver.ChromeOptions()
 
 chrome_options.add_experimental_option("detach", True)  # This line of code keeps Chrome browser window opened
 
-driver = webdriver.Chrome(options=chrome_options)
+# driver = webdriver.Chrome(options=chrome_options)
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
 driver.get(f"{URL}")
 

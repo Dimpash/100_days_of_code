@@ -11,7 +11,7 @@ class BlogPostAddForm(FlaskForm):
     author = StringField(label="The author's name", validators=[DataRequired(), Length(max=250)])
     img_url = StringField(label="A URL for the background image", validators=[DataRequired(), URL()])
     body = CKEditorField(label="The body (the main content) of the post", validators=[DataRequired()])
-    submit = SubmitField('Add Post')
+    submit = SubmitField('Submit Post')
 
 
 

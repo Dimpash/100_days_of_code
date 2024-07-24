@@ -97,11 +97,11 @@ def edit_post(post_id):
     update_post = db.session.execute(db.select(BlogPost).where(BlogPost.id == post_id)).scalar()
     form = BlogPostAddForm()
     if form.validate_on_submit():
-        update_post.title=form.title.data
-        update_post.subtitle=form.subtitle.data
-        update_post.body=form.body.data
-        update_post.author=form.author.data
-        update_post.img_url=form.img_url.data
+        update_post.title = form.title.data
+        update_post.subtitle = form.subtitle.data
+        update_post.body = form.body.data
+        update_post.author = form.author.data
+        update_post.img_url = form.img_url.data
         db.session.commit()
         return redirect(url_for('show_post', post_id=post_id))
     form.title.data = update_post.title

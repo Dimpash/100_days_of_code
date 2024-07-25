@@ -6,11 +6,13 @@ from flask_gravatar import Gravatar
 from flask_login import UserMixin, login_user, LoginManager, current_user, logout_user, login_required
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column
-from sqlalchemy import Integer, String, Text
+from sqlalchemy import Integer, String, Text, ForeignKey
 from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
+from typing import List
 # Import your forms from the forms.py
-from forms import CreatePostForm, RegisterUserForm, LoginForm
+from forms import CreatePostForm, RegisterUserForm, LoginForm, CommentForm
+from models import db, BlogPost, User, Comment
 
 
 '''
@@ -44,35 +46,60 @@ def load_user(user_id):
     return user
 
 
-# CREATE DATABASE
-class Base(DeclarativeBase):
-    pass
+# # CREATE DATABASE
+# class Base(DeclarativeBase):
+#     pass
 
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
-db = SQLAlchemy(model_class=Base)
+# db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
-
-# CONFIGURE TABLES
-class BlogPost(db.Model):
-    __tablename__ = "blog_posts"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    title: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
-    subtitle: Mapped[str] = mapped_column(String(250), nullable=False)
-    date: Mapped[str] = mapped_column(String(250), nullable=False)
-    body: Mapped[str] = mapped_column(Text, nullable=False)
-    author: Mapped[str] = mapped_column(String(250), nullable=False)
-    img_url: Mapped[str] = mapped_column(String(250), nullable=False)
+# Initialize Gravatar
+gravatar = Gravatar(app,
+                    size=100,
+                    rating='g',
+                    default='retro',
+                    force_default=False,
+                    force_lower=False,
+                    use_ssl=False,
+                    base_url=None)
 
 
-# TODO: Create a User table for all your registered users. 
-# CREATE TABLE IN DB
-class User(db.Model, UserMixin):
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    email: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
-    password: Mapped[str] = mapped_column(String(100), nullable=False)
-    name: Mapped[str] = mapped_column(String(100), nullable=False)
+# # CONFIGURE TABLES
+# class BlogPost(db.Model):
+#     __tablename__ = "blog_posts"
+#     id: Mapped[int] = mapped_column(Integer, primary_key=True)
+#     title: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
+#     subtitle: Mapped[str] = mapped_column(String(250), nullable=False)
+#     date: Mapped[str] = mapped_column(String(250), nullable=False)
+#     body: Mapped[str] = mapped_column(Text, nullable=False)
+#     author_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+#     author: Mapped["User"] = relationship(back_populates="blogposts")
+#     img_url: Mapped[str] = mapped_column(String(250), nullable=False)
+#     comments: Mapped[List["Comment"]] = relationship(back_populates="post")
+#
+#
+# # TODO: Create a User table for all your registered users.
+# # CREATE TABLE IN DB
+# class User(db.Model, UserMixin):
+#     __tablename__ = "user"
+#     id: Mapped[int] = mapped_column(Integer, primary_key=True)
+#     email: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
+#     password: Mapped[str] = mapped_column(String(100), nullable=False)
+#     name: Mapped[str] = mapped_column(String(100), nullable=False)
+#     blogposts: Mapped[List["BlogPost"]] = relationship(back_populates="author")
+#     comments: Mapped[List["Comment"]] = relationship(back_populates="author")
+#
+#
+# class Comment(db.Model):
+#     __tablename__ = "comments"
+#     id: Mapped[int] = mapped_column(Integer, primary_key=True)
+#     body: Mapped[str] = mapped_column(Text, nullable=False)
+#     author_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+#     author: Mapped["User"] = relationship(back_populates="comments")
+#     post_id: Mapped[int] = mapped_column(ForeignKey("blog_posts.id"))
+#     post: Mapped["BlogPost"] = relationship(back_populates="comments")
 
 
 with app.app_context():
@@ -152,10 +179,21 @@ def get_all_posts():
 
 
 # TODO: Allow logged-in users to comment on posts
-@app.route("/post/<int:post_id>")
+@app.route("/post/<int:post_id>", methods=['GET', 'POST'])
 def show_post(post_id):
     requested_post = db.get_or_404(BlogPost, post_id)
-    return render_template("post.html", post=requested_post)
+    post_comments = db.session.execute(db.select(Comment).where(Comment.post_id == requested_post.id)).scalars().all()
+    comment_form = CommentForm()
+    if current_user.is_authenticated and comment_form.validate_on_submit():
+        new_comment = Comment(
+            body=comment_form.body.data,
+            author=current_user,
+            post=requested_post
+        )
+        db.session.add(new_comment)
+        db.session.commit()
+        return redirect(url_for('show_post', post_id=post_id))
+    return render_template("post.html", post=requested_post, comment_form=comment_form, post_comments=post_comments)
 
 
 # TODO: Use a decorator so only an admin user can create a new post
@@ -169,7 +207,7 @@ def add_new_post():
             subtitle=form.subtitle.data,
             body=form.body.data,
             img_url=form.img_url.data,
-            author=current_user.name,
+            author=current_user,
             date=date.today().strftime("%B %d, %Y")
         )
         db.session.add(new_post)

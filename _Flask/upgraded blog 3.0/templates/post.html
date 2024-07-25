@@ -1,3 +1,4 @@
+{% from "bootstrap5/form.html" import render_form %}
 {% include "header.html" %}
 <!-- Page Header-->
 <header class="masthead" style="background-image: url('{{ post.img_url }}')">
@@ -8,7 +9,7 @@
           <h1>{{ post.title }}</h1>
           <h2 class="subheading">{{ post.subtitle }}</h2>
           <span class="meta">Posted by
-            <a href="#">{{ post.author }}</a>
+            <a href="#">{{ post.author.name }}</a>
             on {{ post.date }}
           </span>
         </div>
@@ -31,18 +32,27 @@
         {% endif %}
         <!-- Comments Area -->
         <!-- TODO: Add a CKEditor for commenting below -->
+
         <div class="comment">
+          {% if current_user.is_authenticated %}
+            {{ ckeditor.load() }}
+            {{ ckeditor.config(name='body') }}
+            {{ render_form(comment_form, novalidate=True, button_map={"submit": "primary"}) }}
+          {% endif %}
           <!-- TODO: Show all the comments on a post -->
           <ul class="commentList">
+            {% for comment in post_comments %}
             <li>
               <div class="commenterImage">
-                <img src="../static/assets/img/default-profile.jpg" />
+<!--                <img src="../static/assets/img/default-profile.jpg" />-->
+                <img src="{{ comment.author.email|gravatar  }}" />
               </div>
               <div class="commentText">
-                <p>Some comment</p>
-                <span class="date sub-text">comment author name</span>
+                <p>{{ comment.body|safe }}</p>
+                <span class="date sub-text">{{ comment.author.name }}</span>
               </div>
             </li>
+            {% endfor %}
           </ul>
         </div>
       </div>

@@ -1,0 +1,37 @@
+body {
+    background-color: #F8EDE3;
+}
+
+hr {
+    border-style: none;
+    border-top-style: dotted;
+    border-color: gray;
+    border-width: 5px;
+    height: 0px;
+    width: 5%;
+}
+
+h1 {
+    color: red;
+    font-size: 50px;
+}
+
+h3 {
+    color: #85586F;
+}
+
+img:hover {
+    background-color: gold;
+}
+
+.bacon {
+    background-color: blue;
+}
+
+.circular {
+    border-radius: 100%;
+}
+
+#heading {
+    color: magenta;
+}
